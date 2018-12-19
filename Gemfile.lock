@@ -74,6 +74,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     msgpack (1.2.4)
+    mysql2 (0.5.2)
     netrc (0.11.0)
     nio4r (2.3.1)
     nokogiri (1.8.5)
@@ -136,6 +137,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
+  mysql2 (= 0.5.2)
   puma (~> 3.11)
   rails (~> 5.2.1)
   rest-client

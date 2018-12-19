@@ -19,7 +19,7 @@ COPY --chown=teleport:teleport . ./
 
 ENV RAILS_ENV production
 
-RUN RAILS_ENV=production bundle exec rake db:migrate
+# RUN RAILS_ENV=production bundle exec rake db:migrate
 
 EXPOSE 3000
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

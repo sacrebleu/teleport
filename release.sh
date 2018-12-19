@@ -1,4 +1,4 @@
-# /usr/bin/env bash
+#!/usr/bin/env bash
 
 while getopts ":r:" opt; do
   case $opt in
@@ -66,5 +66,5 @@ docker tag $IMAGE:$version $REPO/$IMAGE:$version
 docker push $REPO/$IMAGE:latest
 docker push $REPO/$IMAGE:$version
 
-echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
-kubectl set image deployment/${IMAGE} ${IMAGE}=${REPO}/${IMAGE}:${version} --record && kubectl rollout status deployment/$IMAGE
+#echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
+#kubectl set image deployment/${IMAGE} ${IMAGE}=${REPO}/${IMAGE}:${version} --record && kubectl rollout status deployment/$IMAGE

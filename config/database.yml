@@ -20,6 +20,10 @@ test:
   <<: *default
   database: db/test.sqlite3
 
-production:
+production: 
   <<: *default
-  database: db/production.sqlite3
+  adapter: mysql2
+  host: <%= ENV.fetch("DB_HOST") %>
+  database: <%= ENV.fetch("DB_NAME") %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>

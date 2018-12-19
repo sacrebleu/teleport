@@ -9,10 +9,12 @@ class Authenticator
   # authenticate against the remote server and retrieve a token
 	def self.authenticate(number)
 		Rails.logger.info "Authenticating with remote server"
-  	creds = Credential.find_by_number(number)
+		lookup = Lookup.find_by_mo(number)
+
+  	creds = Credential.where(country: lookup.cc, phone: lookup.number).first
 
   	code, auth_res = HttpApi.post(
-  		"https://api.#{creds.number}.wa.prod.nexmo.cloud:443/v1/users/login",
+  		"https://api.#{lookup.mo}.wa.prod.nexmo.cloud:443/v1/users/login",
   		basic_auth(creds.username, creds.password)
   	)
 
