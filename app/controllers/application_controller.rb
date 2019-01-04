@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
 	rescue_from Unauthenticated, with: :unauthenticated
 
   def unauthenticated

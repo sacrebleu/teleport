@@ -1,0 +1,8 @@
+<tr>
+  <td><%= row.metric %></td>
+  <td><%= row.labels["node"] %></td>
+  <td><%= row.labels["query"] || row.labels["coreapp"] || row.labels["state"] %></td>
+  <td><%= row.labels["method"] %></td>
+  <td><%= row.labels["result"] %></td>
+  <td><%= row.counter %></td>
+</tr>

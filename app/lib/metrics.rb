@@ -11,5 +11,4 @@ class Metrics
 			[ res[:body], res["code"] ]
 		end
 	end
-
 end
