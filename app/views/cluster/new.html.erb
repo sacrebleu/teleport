@@ -1,0 +1,41 @@
+<h5>Register new Whatsapp cluster</h5>
+
+<%= form_tag({controller: "cluster",  action: "create"}, method: "post", class: "form-horizontal" ) %>
+
+<div class="form_group">
+	<%= label_tag :country, "Country code", for: "country", class: "col-sm-2"%>
+	<div class="col-sm-4">
+		<%= phone_field_tag :country, "", class: "col-sm-4 form_control"  %>	
+	</div>
+	<span class="help-block">Numeric dial code of the country for this mo</span>
+</div>
+
+<div class="form_group">
+	<%= label_tag :phone, "Phone number", for: "phone", class: "col-sm-2" %>
+	<div class="col-sm-4">
+		<%= phone_field_tag :phone, "", class: "col-sm-8 form_control " %>
+	</div>
+	<span class="help-block">The remaining digits of the mo number</span>
+</div>
+
+<div class="form_group">
+	<%= label_tag :password, "DB password", for: "password", class: "col-sm-2" %>
+	<div class="col-sm-4">
+		<%= password_field_tag :password, "", class: "col-sm-6 form_control " %>
+	</div>
+	<span class="help-block">The cluster root db password</span>
+</div>
+
+<div class="form_group">
+	<%= label_tag :password_confirm, "DB Password confirm", for: "password_confirm", class: "col-sm-2" %>
+	<div class="col-sm-4">
+		<%= password_field_tag :password_confirm, "", class: "col-sm-6 form_control " %>
+	</div>
+	<span class="help-block">Password confirmation</span>
+</div>
+
+<div class="form_group pull-right">
+
+<button type="button" class="btn btn-primary">Create</button>
+<button type="button" class="btn btn-default">Abort</button>
+</div>

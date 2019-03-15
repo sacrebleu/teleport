@@ -37,6 +37,8 @@ gem 'rspec-rails'
 
 gem 'rest-client'
 
+gem "json_pure", "2.1.0"
+
 gem 'mysql2' , '0.5.2'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

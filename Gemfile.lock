@@ -59,6 +59,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.4.0)
       concurrent-ruby (~> 1.0)
+    json_pure (2.1.0)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -158,6 +159,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
+  json_pure (= 2.1.0)
   mysql2 (= 0.5.2)
   puma (~> 3.11)
   rails (~> 5.2.1)

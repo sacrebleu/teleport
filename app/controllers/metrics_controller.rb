@@ -1,9 +1,9 @@
 class MetricsController < ApplicationController
 
   def index
-    res, _ = Metrics.fetch(params[:number])
+    res, _ = Stats::Metrics.fetch(params[:number])
 
-    s = Status.new(params[:number], res)
+    s = Stats::Status.new(params[:number], res)
 
     @rows = s.metrics
   end

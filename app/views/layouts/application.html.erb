@@ -24,10 +24,7 @@
   <body>
 
   <div class="container">
-    <h4>Teleport <%= Rails.application.config.x.teleport_version %></h4>
-    <ul class="nav nav-pills">
-      <li role="presentation" class="navbar-btn active"><a href="/cluster">Home</a></li>
-    </ul>
+    <h4><a href="/cluster">Teleport <%= Rails.application.config.x.teleport_version %></a></h4>
     <%= yield %>
   </div>
   </body>
