@@ -29,7 +29,9 @@ module Stats
       execute url, :get, auth_header, opts
     end
 
-    def self.execute url, method, auth_header, opts = {expects: 200, format: :json}
+    def self.execute url, method, auth_header, opts = {expects: 200, format: :json }
+      # Rails.logger.info "Calling #{method}: #{url}"
+      # Rails.logger.info "auth: #{auth_header}"
       begin
         res = RestClient::Request.execute(
             url: url,

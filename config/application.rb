@@ -26,6 +26,8 @@ module Teleport
 
     config.x.api_endpoint = "https://api.MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ""}.nexmo.cloud:443/v1"
 
+    config.x.metrics_endpoint = "https://api.MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ""}.nexmo.cloud:443"
+
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
     # Settings in config/environments/* take precedence over those specified here.

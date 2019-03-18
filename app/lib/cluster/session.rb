@@ -15,7 +15,7 @@ module Cluster
 
     # authenticate against the remote server and retrieve a token
     def authenticate(username, password)
-      print "Authenticating with remote server... "
+      Rails.logger.info "Authenticating with remote server... "
       @session_token = Api.authenticate number, basic_auth(username, password)
     end
 

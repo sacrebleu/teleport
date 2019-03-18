@@ -3,7 +3,7 @@ module Stats
 
     def self.fetch(number)
 
-      url = WhatsappUrl.generate(number, "/metrics?format=prometheus")
+      url = WhatsappUrl.metrics(number, "/metrics?format=prometheus")
 
       code, res = HttpApi.get(url,
                               Authenticator.authorize(number), {format: :raw}
