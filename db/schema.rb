@@ -10,14 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_16_130458) do
+ActiveRecord::Schema.define(version: 2019_03_15_154140) do
 
-  create_table "credentials", force: :cascade do |t|
+  create_table "lookups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "number"
-    t.string "username"
-    t.string "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "country"
+    t.string "phone"
+  end
+
+  create_table "whatsapp_config", primary_key: ["country", "phone"], options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "country", limit: 4, null: false
+    t.string "phone", limit: 20, null: false
+    t.string "username", limit: 45
+    t.string "password", limit: 45
+    t.string "pin", limit: 6
+    t.string "npe_instance", limit: 45
+    t.string "kubernetes", limit: 45
+    t.text "data", limit: 16777215
+    t.string "api_key", limit: 50
+    t.string "company_name", limit: 45
+    t.string "version", limit: 45
+    t.timestamp "time_data_backedup"
+    t.string "data_password", limit: 45
+    t.integer "shard_count", limit: 1, default: 1, unsigned: true
+    t.string "deployment_type", limit: 20, default: "npe"
   end
 
 end

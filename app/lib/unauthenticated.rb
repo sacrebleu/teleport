@@ -1,3 +1,0 @@
-class Unauthenticated < StandardError
-
-end
