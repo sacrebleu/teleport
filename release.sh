@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
-while getopts ":r:" opt; do
+PROD=0
+RELEASE=0
+DEV_REPO=564623767830.dkr.ecr.eu-west-1.amazonaws.com
+PROD_REPO=920763156836.dkr.ecr.eu-west-1.amazonaws.com
+
+while getopts ":p" opt; do
   case $opt in
+    p)
+      PROD=1
+      ;;
     r)
-      REPO=$OPTARG
+      RELEASE=1
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -19,11 +27,6 @@ while getopts ":r:" opt; do
       ;;  
   esac
 done
-
-if [[ -z "${REPO}" ]]; then
-    echo "REPO not specified with -r."
-    exit 1
-fi
 
 AWS_REGION=${REGION}
 AWS_DEFAULT_REGION=${REGION}
@@ -43,7 +46,7 @@ echo "| AWS cli: $(aws --version)"
 
 # suppress a legal -e flag that docker no longer supports
 docker_login=$(aws ecr get-login --region eu-west-1 | sed 's/ -e none//')
-echo "Logging into ECR with ${docker_login}"
+echo "Logging into Def ECR"
 eval $docker_login
 
 regversion=$(aws ecr describe-images --registry-id 564623767830  --repository-name nexmo-wa-monitoring --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags' | grep -e [0-9] | sed 's/[ ",]//g' )
@@ -53,18 +56,33 @@ echo "Registry latest version: ${regversion}"
 
 if [[ "${version}" = "${regversion}" ]]; then 
   echo "Latest version already exists in registry - did you remember to bump the version?"
-  exit 0
+else
+    docker build . -t $IMAGE:$version
+    docker tag $IMAGE:$version $IMAGE:latest
+
+    echo "Preparing to publish ${IMAGE}:${version} to ${DEV_REPO}/${IMAGE}:${version}"
+
+    docker tag $IMAGE:latest $DEV_REPO/$IMAGE:latest
+    docker tag $IMAGE:$version $DEV_REPO/$IMAGE:$version
+    docker push $DEV_REPO/$IMAGE:latest
+    docker push $DEV_REPO/$IMAGE:$version
 fi
 
-docker build . -t $IMAGE:$version
-docker tag $IMAGE:$version $IMAGE:latest
+# roll out to production ecr as well
+if [[ "1" -eq "${PROD}" ]]; then
+    docker_login=$(AWS_PROFILE=nexmo-prod aws ecr get-login --region eu-west-1 | sed 's/ -e none//')
 
-echo "Preparing to publish ${IMAGE}:${version} to ${REPO}/${IMAGE}:${version}" 
+    echo "Logging into Production ECR."
+    eval $docker_login
 
-docker tag $IMAGE:latest $REPO/$IMAGE:latest
-docker tag $IMAGE:$version $REPO/$IMAGE:$version
-docker push $REPO/$IMAGE:latest
-docker push $REPO/$IMAGE:$version
+    docker tag $IMAGE:latest $PROD_REPO/$IMAGE:latest
+    docker tag $IMAGE:$version $PROD_REPO/$IMAGE:$version
+    docker push $PROD_REPO/$IMAGE:latest
+    docker push $PROD_REPO/$IMAGE:$version
+fi
 
-#echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
-#kubectl set image deployment/${IMAGE} ${IMAGE}=${REPO}/${IMAGE}:${version} --record && kubectl rollout status deployment/$IMAGE
+echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
+kubectx nexmo-wa-dev
+patchstr="{\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"teleport\", \"image\": \"564623767830.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring:${version}\"}]}}}}"
+echo Patching: ${patchstr}
+kubectl patch deployment wa-monitor -n monitoring -p \ "${patchstr}"
