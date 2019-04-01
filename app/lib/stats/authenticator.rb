@@ -3,6 +3,10 @@ module Stats
 
     # cache the authorization token for reuse
     def self.authorize(number)
+      if Rails.cache.fetch("ratelimits/#{number}")
+        Rails.logger.warn "Rate limited for #{number}"
+        return nil
+      end
       token = session_token(number)
       "Bearer #{token}"
     end
@@ -14,7 +18,13 @@ module Stats
 
       creds = Credential.where(country: lookup.country, phone: lookup.phone).first
 
-      HttpApi.authenticate(number, creds.username, creds.password)
+      begin
+        HttpApi.authenticate(number, creds.username, creds.password)
+      rescue RestClient::TooManyRequests
+        Rails.logger.info "Auth requests for #{number} are rate limited."
+        Rails.cache.write("ratelimits/#{number}", true, :expires_in => 1.minutes)
+        raise RateLimited.new("429 Too Many Requests")
+      end
     end
 
     # fetch the number's token, or authenticate via basic auth and generate a new token if no token is found

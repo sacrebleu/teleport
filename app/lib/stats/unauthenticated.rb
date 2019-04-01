@@ -1,5 +1,3 @@
 module Stats
-	class Unauthenticated < StandardError
-
-	end
+  class Unauthenticated < StandardError; end
 end

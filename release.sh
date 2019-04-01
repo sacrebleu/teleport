@@ -5,7 +5,7 @@ RELEASE=0
 DEV_REPO=564623767830.dkr.ecr.eu-west-1.amazonaws.com
 PROD_REPO=920763156836.dkr.ecr.eu-west-1.amazonaws.com
 
-while getopts ":p" opt; do
+while getopts ":pr" opt; do
   case $opt in
     p)
       PROD=1
