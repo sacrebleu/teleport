@@ -4,10 +4,10 @@ module Stats
 
       url = WhatsappUrl.metrics(number, "/v1/stats/app?format=prometheus")
 
-      auth = Authenticator.authorize(number)
-      return [nil, 429] unless auth
+      res, code = Authenticator.authorize(number)
+      return [res, code] unless code == 200
 
-      code, res = HttpApi.get(url, auth, {format: :raw}
+      code, res = HttpApi.get(url, res, {format: :raw}
       )
 
       if code == :ok
@@ -21,9 +21,9 @@ module Stats
 
       url = WhatsappUrl.metrics(number, "/v1/stats/db?format=prometheus")
 
-      auth = Authenticator.authorize(number)
-      return [nil, 429] unless auth
-      code, res = HttpApi.get(url, auth, {format: :raw}
+      res, code = Authenticator.authorize(number)
+      return [res, code] unless code == 200
+      code, res = HttpApi.get(url, res, {format: :raw}
       )
 
       if code == :ok

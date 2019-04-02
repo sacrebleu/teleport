@@ -2,16 +2,20 @@
 
 PROD=0
 RELEASE=0
+LIVE_RELEASE=0
 DEV_REPO=564623767830.dkr.ecr.eu-west-1.amazonaws.com
 PROD_REPO=920763156836.dkr.ecr.eu-west-1.amazonaws.com
 
-while getopts ":pr" opt; do
+while getopts ":prl" opt; do
   case $opt in
     p)
       PROD=1
       ;;
     r)
       RELEASE=1
+      ;;
+    l)
+      LIVE_RELEASE=1
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -81,8 +85,18 @@ if [[ "1" -eq "${PROD}" ]]; then
     docker push $PROD_REPO/$IMAGE:$version
 fi
 
-echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
-kubectx nexmo-wa-dev
-patchstr="{\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"teleport\", \"image\": \"564623767830.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring:${version}\"}]}}}}"
-echo Patching: ${patchstr}
-kubectl patch deployment wa-monitor -n monitoring -p \ "${patchstr}"
+if [[ "1" -eq "${RELEASE}" ]]; then
+    echo "Deploying ${IMAGE}=${REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
+    kubectx nexmo-wa-dev
+    patchstr="{\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"teleport\", \"image\": \"${DEV_REPO}/${IMAGE}:${version}\"}]}}}}"
+    echo Patching: ${patchstr} to nexmo-wa-dev
+    AWS_PROFILE=nexmo-dev kubectl patch deployment wa-monitor -n monitoring -p \ "${patchstr}"
+fi
+
+if [[ "1" -eq "${LIVE_RELEASE}" ]]; then
+    echo "Deploying ${IMAGE}=${PROD_REPO}/${IMAGE}:${version} to deployment/${IMAGE}"
+    kubectx arn:aws:eks:eu-west-1:920763156836:cluster/nexmo-eks-prod-eu-west-1
+    patchstr="{\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"teleport\", \"image\": \"${PROD_REPO}/${IMAGE}:${version}\"}]}}}}"
+    echo Patching: ${patchstr} to arn:aws:eks:eu-west-1:920763156836:cluster/nexmo-eks-prod-eu-west-1
+    AWS_PROFILE=nexmo-prod kubectl patch deployment wa-monitor -n monitoring -p \ "${patchstr}"
+fi

@@ -5,10 +5,16 @@ module Stats
     def self.authorize(number)
       if Rails.cache.fetch("ratelimits/#{number}")
         Rails.logger.warn "Rate limited for #{number}"
-        return nil
+        return [nil, 429]
       end
+
+      if Rails.cache.fetch("authfail/#{number}")
+        Rails.logger.info "Auth failed, in backoff period."
+        raise Unauthenticated.new, "Auth failed, in backoff period."
+      end
+
       token = session_token(number)
-      "Bearer #{token}"
+      ["Bearer #{token}", 200]
     end
 
     # authenticate against the remote server and retrieve a token

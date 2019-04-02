@@ -9,7 +9,8 @@ module Stats
       if code == :ok
         token = auth_res["users"].first["token"]
       else
-        Rails.logger.error auth_res
+        Rails.logger.info "Auth failure for #{number}, backing off."
+        Rails.cache.write("authfail/#{number}", true, :expires_in => 1.minutes)
         raise Unauthenticated.new
       end
 
