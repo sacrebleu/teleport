@@ -10,7 +10,7 @@ module Stats
 
       if Rails.cache.fetch("authfail/#{number}")
         Rails.logger.info "Auth failed, in backoff period."
-        raise Unauthenticated.new, "Auth failed, in backoff period."
+        raise Unauthenticated.new, "Auth failed, in backoff period for #{number}."
       end
 
       token = session_token(number)
@@ -24,12 +24,15 @@ module Stats
 
       creds = Credential.where(country: lookup.country, phone: lookup.phone).first
 
+      raise Unauthenticated.new, "#{number} - No valid username in database" unless creds.username
+      raise Unauthenticated.new, "#{number} - No valid password in database" unless creds.password
+
       begin
         HttpApi.authenticate(number, creds.username, creds.password)
       rescue RestClient::TooManyRequests
         Rails.logger.info "Auth requests for #{number} are rate limited."
         Rails.cache.write("ratelimits/#{number}", true, :expires_in => 1.minutes)
-        raise RateLimited.new("429 Too Many Requests")
+        raise RateLimited.new("429 Too Many Requests for #{number}")
       end
     end
 
