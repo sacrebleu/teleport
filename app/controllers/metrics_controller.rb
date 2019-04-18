@@ -20,12 +20,6 @@ class MetricsController < ApplicationController
     end
   end
 
-  def limit(result)
-    raise Stats::RateLimited, 'Rate limited by server' if result[1] == 429
-
-    result[0]
-  end
-
   def get_core_stats
     res, code = Stats::Stats.core_stats(params[:number])
 
