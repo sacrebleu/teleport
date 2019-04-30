@@ -14,10 +14,12 @@ class MetricsController < ApplicationController
       res << limit(Stats::Stats.core_stats(params[:number]))
       res << limit(Stats::Stats.db_stats(params[:number]))
 
+      customer_name = Stats::Customer.fetch_company_name(params[:number])
+
       health = <<~EOF
 # HELP liveness check for whatsapp cluster for customer number #{params[:number]}
 # TYPE whatsapp_cluster_health gauge
-whatsapp_cluster_health{customer="#{params[:number]}"} #{limit(Stats::Health.sanity(params[:number]))}
+whatsapp_cluster_health{customer="#{params[:number]}",name="#{customer_name}"} #{limit(Stats::Health.sanity(params[:number]))}
       EOF
 
       res << health
