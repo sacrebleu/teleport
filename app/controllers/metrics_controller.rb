@@ -19,7 +19,7 @@ class MetricsController < ApplicationController
       health = <<~EOF
 # HELP liveness check for whatsapp cluster for customer number #{params[:number]}
 # TYPE whatsapp_cluster_health gauge
-whatsapp_cluster_health{customer="#{params[:number]}",name="#{customer_name}"} #{limit(Stats::Health.sanity(params[:number]))}
+whatsapp_cluster_health{customer="#{params[:number]}",customer_name="#{customer_name}"} #{limit(Stats::Health.sanity(params[:number]))}
       EOF
 
       res << health

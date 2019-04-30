@@ -13,12 +13,12 @@ class HealthController < ApplicationController
     begin
       res = limit(Stats::Health.sanity(params[:number]))
 
-      customer_name = Stats::Customer.fetch_company_name(params[:number])
+      customer_name = Stats::Customer.fetch_company_name(params[:number]) || "None"
 
       output = <<~EOF
 # HELP liveness check for whatsapp cluster for customer number #{params[:number]}
 # TYPE whatsapp_cluster_health gauge
-whatsapp_cluster_health{customer="#{params[:number]}",name="#{customer_name}"} #{res}
+whatsapp_cluster_health{customer="#{params[:number]}",customer_name="#{customer_name}"} #{res}
       EOF
 
       render plain: output, status: 200
