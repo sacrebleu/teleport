@@ -4,3 +4,5 @@ Metrics/LineLength:
 AllCops:
   Exclude:
     - 'bin/*'
+    - 'spec/**/*.rb'
+    - 'db/migrate/*.rb'

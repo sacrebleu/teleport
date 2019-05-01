@@ -42,7 +42,6 @@ describe 'Stats::HttpApi' do
     it 'wraps successful responses with an :ok code' do
       expect(subject).to receive(:call).with('/test', :get, '123').and_return(MockBody.new(200, { a: :b }.to_json))
       code, res = subject.get('/test', '123')
-
       expect(code).to eql(:ok)
       expect(res[:code]).to eql(200)
     end
@@ -50,7 +49,6 @@ describe 'Stats::HttpApi' do
     it 'honours requests for a raw response' do
       expect(subject).to receive(:call).with('/test', :get, '123').and_return(MockBody.new(200, '123'))
       code, res = subject.get('/test', '123', expects: 200, format: :raw)
-
       expect(code).to eql(:ok)
       expect(res[:code]).to eql(200)
       expect(res[:body]).to eql('123')
@@ -59,7 +57,6 @@ describe 'Stats::HttpApi' do
     it 'wraps errors as a struct with an :error code' do
       expect(subject).to receive(:call).with('/test', :get, '123').and_return(MockBody.new(401, '{}'))
       code, res = subject.get('/test', '123')
-
       expect(code).to eql(:error)
       expect(res[:code]).to eql(401)
     end
@@ -67,7 +64,6 @@ describe 'Stats::HttpApi' do
     it 'rescues from an unauthenticated exception' do
       expect(subject).to receive(:call).with('/test', :get, '123').and_raise(RestClient::Unauthorized)
       code, res = subject.get('/test', '123')
-
       expect(code).to eql(:error)
       expect(res[:code]).to eql(401)
       expect(res[:body]).to eql('Unauthorized')

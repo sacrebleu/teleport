@@ -5,7 +5,7 @@ module Stats
   class Metrics < ProtectedResource
     # fetch the cluster metrics for a whatsapp cluster by MO
     def self.fetch(number)
-      url = WhatsappUrl.metrics(number, 'metrics?format=prometheus')
+      url = WhatsappUrl.metrics(number, '/metrics?format=prometheus')
 
       res, code = authorize(number)
       return [res, code] unless code == 200

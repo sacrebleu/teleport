@@ -37,8 +37,7 @@ module Stats
       res, code = authorize(number)
       return [res, code] unless code == 200
 
-      code, res = HttpApi.get(url,
-                              res, format: :raw)
+      code, res = HttpApi.get(url, res, format: :raw)
       return [res[:body], res['code']] unless code == :ok
 
       [JSON.parse(res)['health'], 200]
