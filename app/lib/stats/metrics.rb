@@ -1,22 +1,18 @@
+# frozen_string_literal: true
+
 module Stats
-  class Metrics
-
+  # facade onto cluster prometheus metrics
+  class Metrics < ProtectedResource
+    # fetch the cluster metrics for a whatsapp cluster by MO
     def self.fetch(number)
+      url = WhatsappUrl.metrics(number, 'metrics?format=prometheus')
 
-      url = WhatsappUrl.metrics(number, "/metrics?format=prometheus")
-
-      res, code = Authenticator.authorize(number)
+      res, code = authorize(number)
       return [res, code] unless code == 200
 
-      code, res = HttpApi.get(url,
-                               res, {format: :raw}
-      )
+      code, res = HttpApi.get(url, res, format: :raw)
 
-      if code == :ok
-        [res, 200]
-      else
-        [res[:body], res["code"]]
-      end
+      code == :ok ? [res, 200] : [res[:body], res[:code]]
     end
   end
 end

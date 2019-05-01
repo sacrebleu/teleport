@@ -20,10 +20,10 @@ development:
 production:
   <<: *default
   adapter: mysql2
-  host: <%= ENV.fetch("DB_HOST") %>
-  database: <%= ENV.fetch("DB_NAME") %>
-  username: <%= ENV.fetch("DB_USERNAME") %>
-  password: <%= ENV.fetch("DB_PASSWORD") %>
+  host: <%= ENV.fetch("DB_HOST", "") %>
+  database: <%= ENV.fetch("DB_NAME", "") %>
+  username: <%= ENV.fetch("DB_USERNAME", "") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "") %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
