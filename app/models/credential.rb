@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
+# model for ActiveRecord credential model
 class Credential < ApplicationRecord
-  self.table_name = "whatsapp_config"
+  self.table_name = 'whatsapp_config'
 
   def id
     @id ||= country + phone
   end
 
   # def endpoint
-  # 	@endpoint ||= generate
+  #   @endpoint ||= generate
   # end
 
   # def generate

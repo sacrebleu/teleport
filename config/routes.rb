@@ -1,12 +1,13 @@
-Rails.application.routes.draw do
-  get 'health/get_cluster_health'
-  # resources :credentials
-  get 'metrics/:number', to: "metrics#get_cluster_metrics"
-  get 'metrics/:number/core', to: "metrics#get_core_stats"
-  get 'metrics/:number/db', to: "metrics#get_db_stats"
-  get 'metrics/:number/pretty', to: "metrics#index"
+# frozen_string_literal: true
 
-  get 'health/:number', to: 'health#get_cluster_health'
-  get 'health/:number/sanity', to: 'health#sanity_check'
+Rails.application.routes.draw do
+  # resources :credentials
+  get 'metrics/:number', to: 'metrics#fetch'
+  get 'metrics/:number/display', to: 'metrics#display'
+
+  # get 'health/get_cluster_health'
+  get 'health/',               to: 'health#index'
+  get 'health/:number',        to: 'health#cluster_health'
+  get 'health/:number/sanity', to: 'health#cluster_status'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

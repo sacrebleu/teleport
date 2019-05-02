@@ -1,29 +1,33 @@
-class HealthController < ApplicationController
-  def get_cluster_health
-    begin
-      res = limit(Stats::Health.fetch(params[:number]))
+# frozen_string_literal: true
 
-      render plain: res, status: 200
-    rescue Stats::RateLimited
-      render plain: { status: :error, message: "Rate limited by server" }
+# controller governing cluster health check routes
+class HealthController < ApplicationController
+  respond_to :html, :json
+
+  def index
+    @rows = Stats::Health.aggregate
+
+    respond_to do |format|
+      format.html { respond_with(@rows) }
+      format.json { render json: @rows }
     end
   end
 
-  def sanity_check
-    begin
-      res = limit(Stats::Health.sanity(params[:number]))
+  def cluster_health
+    render plain: Stats::Health.fetch(params[:number])
+  end
 
-      customer_name = Stats::Customer.fetch_company_name(params[:number]) || "None"
+  def cluster_status
+    res = Stats::Health.sanity(params[:number])
 
-      output = <<~EOF
-# HELP liveness check for whatsapp cluster for customer number #{params[:number]}
-# TYPE whatsapp_cluster_health gauge
-whatsapp_cluster_health{customer="#{params[:number]}",customer_name="#{customer_name}"} #{res}
-      EOF
+    customer_name = Stats::Customer.fetch_company_name(params[:number]) || 'None'
 
-      render plain: output, status: 200
-    rescue Stats::RateLimited
-      render plain: { status: :error, message: "Rate limited by server" }
-    end
+    output = <<~GAUGE
+      # HELP liveness check for whatsapp cluster for customer number #{params[:number]}
+      # TYPE whatsapp_cluster_health gauge
+      whatsapp_cluster_health{customer="#{params[:number]}",customer_name="#{customer_name}"} #{res[0]}
+    GAUGE
+
+    render plain: output
   end
 end

@@ -1,33 +1,39 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
-require "rails"
+require 'rails'
 # Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
 # require "active_storage/engine"
-require "action_controller/railtie"
+require 'action_controller/railtie'
 # require "action_mailer/railtie"
-require "action_view/railtie"
+require 'action_view/railtie'
 # require "action_cable/engine"
-require "sprockets/railtie"
-require "rails/test_unit/railtie"
+require 'sprockets/railtie'
+require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module Teleport
+  # core application class
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
-    config.x.teleport_version = IO.read(".version")
+    config.x.teleport_version = IO.read('.version')
 
-    config.x.api_endpoint = "https://MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ""}.nexmo.cloud:443/v1"
+    # api endpoint template string
+    config.x.api_endpoint = "https://MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ''}.nexmo.cloud:443/v1"
 
-    config.x.metrics_endpoint = "https://MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ""}.nexmo.cloud:443"
+    # cluster healthcheck template string
+    config.x.metrics_endpoint = "https://MO.wa#{ENV['WA_ENV'] ? ".#{ENV['WA_ENV']}" : ''}.nexmo.cloud:443"
 
+    # require lib as well
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
     # Settings in config/environments/* take precedence over those specified here.

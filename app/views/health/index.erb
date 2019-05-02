@@ -1,0 +1,14 @@
+<h4>Whatsapp Cluster failures</h4>
+<% if @rows.present? %>
+
+<table class="table-condensed table-striped">
+  <tr>
+    <th><h5>Cluster</h5></th>
+    <th><h5>Pod</h5></th>
+    <th><h5>Failure</h5></th>
+  </tr>
+  <%= render partial: "row", collection: @rows %>
+</table>
+<% else %>
+All clusters are healthy.
+<% end %>

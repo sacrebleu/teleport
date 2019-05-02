@@ -1,17 +1,23 @@
+# frozen_string_literal: true
+
 module Stats
+  # facade onto whatsapp's authentication / authorization scheme.  Generates bearer tokens,
+  # authenticates, honours backoff and rate limiting
   class Authenticator
+    # check to see whether a ratelimiting rule is active for this number
+    def self.ratelimited?(number)
+      Rails.cache.fetch("ratelimits/#{number}") && Rails.logger.warn("Rate limited for #{number}")
+    end
 
-    # cache the authorization token for reuse
+    # check to see whether a backoff rule is active for this number
+    def self.backoff?(number)
+      Rails.cache.fetch("authfail/#{number}") && Rails.logger.warn('Auth failed, in backoff period.')
+    end
+
+    # Authorise a request, honouring backoff or ratelimiting rules
     def self.authorize(number)
-      if Rails.cache.fetch("ratelimits/#{number}")
-        Rails.logger.warn "Rate limited for #{number}"
-        return [nil, 429]
-      end
-
-      if Rails.cache.fetch("authfail/#{number}")
-        Rails.logger.info "Auth failed, in backoff period."
-        raise Unauthenticated.new, "Auth failed, in backoff period for #{number}."
-      end
+      raise RateLimited.new, "Rate limited for #{number}." if ratelimited?(number)
+      raise Unauthenticated.new, "Auth failed, in backoff period for #{number}." if backoff?(number)
 
       token = session_token(number)
       ["Bearer #{token}", 200]
@@ -19,7 +25,7 @@ module Stats
 
     # authenticate against the remote server and retrieve a token
     def self.authenticate(number)
-      Rails.logger.info "Authenticating with remote server"
+      Rails.logger.info 'Authenticating with remote server'
       lookup = lookup_number(number)
 
       creds = Credential.where(country: lookup.country, phone: lookup.phone).first
@@ -27,49 +33,26 @@ module Stats
       raise Unauthenticated.new, "#{number} - No valid username in database" unless creds.username
       raise Unauthenticated.new, "#{number} - No valid password in database" unless creds.password
 
-      begin
-        HttpApi.authenticate(number, creds.username, creds.password)
-      rescue RestClient::TooManyRequests
-        Rails.logger.info "Auth requests for #{number} are rate limited."
-        Rails.cache.write("ratelimits/#{number}", true, :expires_in => 1.minutes)
-        raise RateLimited.new("429 Too Many Requests for #{number}")
-      end
+      do_auth number, creds
     end
 
-    # fetch the number's token, or authenticate via basic auth and generate a new token if no token is found
+    def self.do_auth(number, creds)
+      HttpApi.authenticate(number, creds.username, creds.password)
+    rescue RestClient::TooManyRequests
+      Rails.logger.info "Auth requests for #{number} are rate limited."
+      Rails.cache.write("ratelimits/#{number}", true, expires_in: 1.minutes)
+      raise RateLimited.new, "429 Too Many Requests for #{number}"
+    end
+
+    # fetch the number's token, or authenticate via basic auth and generate a
+    # new token if no token is found
     def self.session_token(number)
-      Rails.cache.fetch("tokens/#{number}", :expires_in => 24.hours) do
-        authenticate(number)
-      end
+      Rails.cache.fetch("tokens/#{number}", expires_in: 24.hours) { authenticate(number) }
     end
 
+    # use the Customer facade to resolve the number to a credential
     def self.lookup_number(number)
-      l = Lookup.find_by_number(number)
-
-      unless l
-        populate_lookups
-        l = Lookup.find_by_number(number)
-
-        raise "No such number in the configuration database: #{number}" unless l
-      end
-      l
-    end
-
-    def self.populate_lookups
-      res = ActiveRecord::Base.connection.execute(<<~EOF
-  SELECT wa.country, wa.phone
-  FROM   whatsapp_config wa
-  LEFT OUTER JOIN lookups
-  ON (wa.phone = lookups.phone)
-  WHERE lookups.phone IS NULL
-      EOF
-      )
-
-      res.each do |record|
-        Lookup.create!(country: record[0], phone: record[1], number: "#{record[0]}#{record[1]}")
-      end
-
-      Rails.logger.info "Populated lookups table with #{res.count} missing records"
+      Customer.lookup_number(number)
     end
   end
 end
