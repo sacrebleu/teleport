@@ -5,13 +5,11 @@ class HealthController < ApplicationController
   respond_to :html, :json
 
   def index
-    # respond_with Stats::Health.aggregate
-
-    res = Stats::Health.aggregate
+    @rows = Stats::Health.aggregate
 
     respond_to do |format|
-      format.html { render res }
-      format.json { render json: res }
+      format.html { respond_with(@rows) }
+      format.json { render json: @rows }
     end
   end
 

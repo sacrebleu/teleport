@@ -46,13 +46,10 @@ RSpec.describe HealthController, type: :controller do
 
       get :index, format: :json
 
-      expected = {
-        '441234567890' => [
-          ['wa-master-441234567890-0', 'unregistered'],
-          ['wa-core-441234567890-1',
-           'Service not ready (1011) - Wacore is not instantiated. Please check wacore log for details.']
-        ]
-      }
+      expected = [
+        ['441234567890', 'wa-master-441234567890-0', 'unregistered'],
+        ['441234567890', 'wa-core-441234567890-1', 'Service not ready (1011) - Wacore is not instantiated. Please check wacore log for details.']
+      ]
 
       expect(response.content_type).to eq('application/json')
 

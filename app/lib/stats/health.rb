@@ -13,8 +13,8 @@ module Stats
         [n, errors]
       end
 
-      res.each_with_object({}) do |val, r|
-        r[val[0]] = val[1]
+      res.each_with_object([]) do |val, obj|
+        val[1].map { |v| obj << [val[0], v].flatten }
       end
     end
 

@@ -51,7 +51,7 @@ RSpec.describe MetricsController, type: :controller do
 
       get :fetch, params: { number: test_mo }, format: :text
       expect(response).to be_successful
-      expect(response.body).to eql(res)
+      expect(response.body.strip).to eql(res.strip)
     end
   end
 end
