@@ -36,15 +36,15 @@ RSpec.describe MetricsController, type: :controller do
       expect(Stats::Stats).to receive(:authorize).twice.with(test_mo.to_s).and_return([{}, 200])
 
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/metrics?format=prometheus", {}, format: :raw).and_return(
-        [:ok, '']
+        [:ok, {body: ''}]
       )
 
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/v1/stats/app?format=prometheus", {}, format: :raw).and_return(
-        [:ok, '']
+        [:ok, {body:''}]
       )
 
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/v1/stats/db?format=prometheus", {}, format: :raw).and_return(
-        [:ok, '']
+        [:ok, {body:''}]
       )
 
       expect(Stats::Health).to receive(:sanity).with(test_mo).and_return(1)

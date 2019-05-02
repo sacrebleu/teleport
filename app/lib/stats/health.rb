@@ -53,7 +53,7 @@ module Stats
       code, res = HttpApi.get(url, res, format: :raw)
       return [res[:body], res[:code]] unless code == :ok
 
-      live?(number, res)
+      live?(number, res[:body])
     end
 
     def self.live?(number, response)

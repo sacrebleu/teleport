@@ -96,7 +96,7 @@ RSpec.describe HealthController, type: :controller do
     it 'returns a prometheus data gauge with value 1 for a successful cluster health check' do
       expect(Stats::Health).to receive(:authorize).with(test_mo.to_s).and_return([{}, 200])
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/v1/health", {}, format: :raw).and_return(
-        [:ok, health_response_connected]
+        [:ok, { body: health_response_connected }]
       )
 
       get :cluster_status, params: { number: test_mo }
@@ -108,7 +108,7 @@ RSpec.describe HealthController, type: :controller do
     it 'returns a prometheus data gauge with value 1 for a failed cluster health check' do
       expect(Stats::Health).to receive(:authorize).with(test_mo.to_s).and_return([{}, 200])
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/v1/health", {}, format: :raw).and_return(
-        [:ok, health_response_unregistered]
+        [:ok, { body: health_response_unregistered }]
       )
 
       get :cluster_status, params: { number: test_mo }

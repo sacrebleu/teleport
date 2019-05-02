@@ -25,7 +25,6 @@ module Stats
 
     # authenticate against the remote server and retrieve a token
     def self.authenticate(number)
-      Rails.logger.info 'Authenticating with remote server'
       lookup = lookup_number(number)
 
       creds = Credential.where(country: lookup.country, phone: lookup.phone).first
@@ -33,6 +32,7 @@ module Stats
       raise Unauthenticated.new, "#{number} - No valid username in database" unless creds.username
       raise Unauthenticated.new, "#{number} - No valid password in database" unless creds.password
 
+      Rails.logger.info 'Authenticating with remote server'
       do_auth number, creds
     end
 

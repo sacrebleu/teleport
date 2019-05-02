@@ -29,8 +29,9 @@ class MetricsController < ApplicationController
   end
 
   def build_metrics(number)
-    res = Stats::Metrics.fetch(number)[0].dup
-    res << Stats::Stats.core_stats(number)[0]
-    res << Stats::Stats.db_stats(number)[0]
+    res = Stats::Metrics.fetch(number)[0][:body].dup
+    res << Stats::Stats.core_stats(number)[0][:body].dup
+    res << Stats::Stats.db_stats(number)[0][:body].dup
+    res
   end
 end

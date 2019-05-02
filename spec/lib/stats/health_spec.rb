@@ -28,13 +28,11 @@ describe 'Stats::Health' do
     it 'generates a status map from a json struct' do
       expect(Rails.cache).to receive(:fetch).with("health/#{test_mo}").and_return(unhealthy_struct)
 
-      expected = {
-        '441234567890' => [
-          ['wa-master-441234567890-0', 'unregistered'],
-          ['wa-core-441234567890-1',
+      expected = [
+          ['441234567890', 'wa-master-441234567890-0', 'unregistered'],
+          ['441234567890', 'wa-core-441234567890-1',
            'Service not ready (1011) - Wacore is not instantiated. Please check wacore log for details.']
-        ]
-      }
+          ]
 
       expect(subject.aggregate).to eql(expected)
     end
@@ -74,7 +72,7 @@ describe 'Stats::Health' do
     it 'fetches and calculates the liveness of a healthy cluster as alive' do
       expect(subject).to receive(:authorize).with(test_mo).and_return(["Bearer #{token}", 200])
       expect(Stats::HttpApi).to receive(:get).with(url, "Bearer #{token}", format: :raw).and_return(
-        [:ok, health_response_connected]
+        [:ok, { body: health_response_connected }]
       )
 
       res, code = subject.sanity(test_mo)
@@ -85,7 +83,7 @@ describe 'Stats::Health' do
     it 'reports a cluster with at least one disconnected node as unhealthy' do
       expect(subject).to receive(:authorize).with(test_mo).and_return(["Bearer #{token}", 200])
       expect(Stats::HttpApi).to receive(:get).with(url, "Bearer #{token}", format: :raw).and_return(
-        [:ok, health_response_disconnected]
+        [:ok, {body: health_response_disconnected}]
       )
 
       res, code = subject.sanity(test_mo)
