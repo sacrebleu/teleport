@@ -16,11 +16,10 @@ class MetricsController < ApplicationController
     number = params[:number]
     customer_name = Stats::Customer.fetch_company_name(number)
 
-    res = <<~GAUGE
-      #{build_metrics(number)}
+    res = build_metrics(number) << <<~GAUGE
       # HELP liveness check for whatsapp cluster for customer number #{number}
       # TYPE whatsapp_cluster_health gauge
-      whatsapp_cluster_health{customer="#{number}",customer_name="#{customer_name}"} #{Stats::Health.sanity(number)}
+      whatsapp_cluster_health{customer="#{number}",customer_name="#{customer_name}"} #{Stats::Health.sanity(number)[0]}
     GAUGE
 
     render plain: res, status: 200
