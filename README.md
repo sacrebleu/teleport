@@ -1,7 +1,7 @@
 # Teleport
 
 Author: Jeremy Botha
-Version: 0.0.26
+Version: 0.0.53
 
 [![Build Status](https://travis-ci.org/sacrebleu/teleport.svg?branch=master)](https://travis-ci.org/sacrebleu/teleport)
 #### Overview
