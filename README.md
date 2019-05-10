@@ -3,6 +3,7 @@
 Author: Jeremy Botha
 Version: 0.0.26
 
+[![Build Status](https://travis-ci.org/sacrebleu/teleport.svg?branch=master)](https://travis-ci.org/sacrebleu/teleport)
 #### Overview
 
 Teleport is a authentication proxy for services like the whatsapp business client 
