@@ -16,6 +16,10 @@ RSpec.describe HealthController, type: :controller do
     '{ "health": { "10.212.65.151:wa-master-441234567890-0": {"gateway_status": "connected", "role": "primary_master" }}}'
   end
 
+  let(:health_response_single_node) do
+    '{ "health": {"10.210.71.117:wa-master-447418342132-0":{"gateway_status":"disconnected","role":"primary_master"},"10.210.72.103:wa-core-447418342132-0":{"gateway_status":"connected","role":"coreapp"}}}'
+  end
+
   let(:unhealthy_struct) do
     JSON.parse(health_response_unregistered)['health']
   end
@@ -84,7 +88,7 @@ RSpec.describe HealthController, type: :controller do
     it 'returns http 200 for a valid request' do
       expect(Stats::Health).to receive(:authorize).with(test_mo.to_s).and_return([{}, 200])
       expect(Stats::HttpApi).to receive(:get).with("https://#{test_mo}.wa.nexmo.cloud:443/v1/health", {}, format: :raw).and_return(
-        [:ok, health_response_connected]
+        [:ok, body: health_response_connected]
       )
 
       get :cluster_health, params: { number: test_mo }

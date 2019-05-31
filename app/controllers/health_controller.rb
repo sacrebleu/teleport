@@ -6,7 +6,6 @@ class HealthController < ApplicationController
 
   def index
     @rows = Stats::Health.aggregate
-
     respond_to do |format|
       format.html { respond_with(@rows) }
       format.json { render json: @rows }
@@ -14,7 +13,11 @@ class HealthController < ApplicationController
   end
 
   def cluster_health
-    render plain: Stats::Health.fetch(params[:number])
+    res = Stats::Health.fetch(params[:number])
+    respond_to do |format|
+      format.html { render plain: res.to_json }
+      format.json { render json: res }
+    end
   end
 
   def cluster_status

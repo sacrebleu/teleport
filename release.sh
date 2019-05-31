@@ -5,11 +5,13 @@ RELEASE=0
 LIVE_RELEASE=0
 DEV_REPO=564623767830.dkr.ecr.eu-west-1.amazonaws.com
 PROD_REPO=920763156836.dkr.ecr.eu-west-1.amazonaws.com
+REPO_ID=564623767830
 
 while getopts ":prl" opt; do
   case $opt in
     p)
       PROD=1
+      REPO_ID=920763156836
       ;;
     r)
       RELEASE=1
@@ -53,7 +55,7 @@ docker_login=$(aws ecr get-login --region eu-west-1 | sed 's/ -e none//')
 echo "Logging into Def ECR"
 eval $docker_login
 
-regversion=$(aws ecr describe-images --registry-id 564623767830  --repository-name nexmo-wa-monitoring --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags' | grep -e [0-9] | sed 's/[ ",]//g' )
+regversion=$(aws ecr describe-images --registry-id ${REPO_ID}  --repository-name nexmo-wa-monitoring --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags' | grep -e [0-9] | sed 's/[ ",]//g' )
 
 echo "Git repo version: $version"
 echo "Registry latest version: ${regversion}"
