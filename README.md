@@ -36,7 +36,7 @@ to deploy to the development cluster `arn:aws:eks:eu-west-1:564623767830:cluster
 
         $ kubectl get po -n monitoring | grep wa-monitor | awk '{print $1 }' | xargs kubectl describe -n monitoring po
         ...
-        Image ID:       docker-pullable://564623767830.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring@sha256:162a3c8be09b2814eb1df6f0e5cea0c9411fc9e583a34c6119f7c144a691fe7d
+        Image ID:       docker-pullable://<redacted>.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring@sha256:162a3c8be09b2814eb1df6f0e5cea0c9411fc9e583a34c6119f7c144a691fe7d
     
 
 to deploy to the production cluster `arn:aws:eks:eu-west-1:920763156836:cluster/nexmo-eks-prod-eu-west-1`
@@ -47,7 +47,7 @@ to deploy to the production cluster `arn:aws:eks:eu-west-1:920763156836:cluster/
 
         $ kubectl get po -n monitoring | grep wa-monitor | awk '{print $1 }' | xargs kubectl describe -n monitoring po
         ... 
-        Image ID:       docker-pullable://920763156836.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring@sha256:c19fddfbf95f7a5b04889e2f19d03defc4ba4b80f2f407817e755400ff877f94
+        Image ID:       docker-pullable://<redacted>.dkr.ecr.eu-west-1.amazonaws.com/nexmo-wa-monitoring@sha256:c19fddfbf95f7a5b04889e2f19d03defc4ba4b80f2f407817e755400ff877f94
 
 #### Operation
 

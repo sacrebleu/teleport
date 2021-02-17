@@ -3,24 +3,24 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.1'
+ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.1'
+gem "activerecord", '5.2.2'
+gem "activemodel", '5.2.2'
+gem "actionpack", '5.2.2'
+gem "actionview", '5.2.2'
+gem "activesupport", '5.2.2'
+gem "railties", '5.2.2'
+gem "sprockets-rails", '3.2.1'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+# gem 'bootsnap', '>= 1.1.0', require: false
 gem 'turbolinks'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
@@ -38,12 +38,11 @@ group :development do
 end
 
 gem 'rest-client'
-
 gem 'json_pure', '2.1.0'
-
 gem 'mysql2', '0.5.2'
-
 gem 'responders', '2.4.1'
+
+gem 'nokogiri', '1.11.1'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
