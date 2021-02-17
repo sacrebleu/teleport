@@ -1,4 +1,4 @@
-FROM ruby:2.5.1-stretch
+FROM ruby:2.7.1-buster
 MAINTAINER Jeremy Botha
 
 # add marionette user
