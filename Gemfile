@@ -6,18 +6,18 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "activerecord", '5.2.2'
-gem "activemodel", '5.2.2'
-gem "actionpack", '5.2.2'
-gem "actionview", '5.2.2'
-gem "activesupport", '5.2.2'
-gem "railties", '5.2.2'
+gem "activerecord", '5.2.4.5'
+gem "activemodel", '5.2.4.5'
+gem "actionpack", '5.2.4.5'
+gem "actionview", '5.2.4.5'
+gem "activesupport", '5.2.4.5'
+gem "railties", '5.2.4.5'
 gem "sprockets-rails", '3.2.1'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 3.12'
 
 # Reduces boot times through caching; required in config/boot.rb
 # gem 'bootsnap', '>= 1.1.0', require: false
