@@ -6,13 +6,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "activerecord", '5.2.4.5'
-gem "activemodel", '5.2.4.5'
-gem "actionpack", '5.2.4.5'
-gem "actionview", '5.2.4.5'
-gem "activesupport", '5.2.4.5'
-gem "railties", '5.2.4.5'
-gem "sprockets-rails", '3.2.1'
+gem "activerecord", '7.0.3.1'
+gem "activemodel", '7.0.3.1'
+gem "actionpack", '7.0.3.1'
+gem "actionview", '7.0.3.1'
+gem "activesupport", '7.0.3.1'
+gem "railties", '7.0.3.1'
+gem "sprockets-rails", '3.4.2'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
@@ -40,7 +40,7 @@ end
 gem 'rest-client'
 gem 'json_pure', '2.1.0'
 gem 'mysql2', '0.5.2'
-gem 'responders', '2.4.1'
+gem 'responders', '3.0.1'
 
 gem 'nokogiri', '1.11.1'
 
